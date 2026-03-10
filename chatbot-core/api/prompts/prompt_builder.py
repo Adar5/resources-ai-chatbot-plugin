@@ -5,6 +5,8 @@ chat history, context retrieved from the knowledge base, and the user's question
 from typing import Optional
 from langchain.memory import ConversationBufferMemory
 from api.prompts.prompts import SYSTEM_INSTRUCTION, LOG_ANALYSIS_INSTRUCTION
+from api.tools.sanitizer import sanitize_logs
+
 
 def build_prompt(
     user_query: str,
@@ -35,6 +37,7 @@ def build_prompt(
 
     # If log context exists, we append it as a specific section
     if log_context:
+        log_context = sanitize_logs(log_context)
         system_prompt = LOG_ANALYSIS_INSTRUCTION
         log_section = f"""
             User-Provided Log Data:
